@@ -1,0 +1,1 @@
+texturas locais do jogo pro navegador indentificar o que deve ser puxado pelos scripts
