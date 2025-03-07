@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Estilo Terraria com Plataforma de Grama</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(to top, #00b7eb 50%, #0088b3 100%);
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path d="M16 0v32M0 16h32" stroke="black" stroke-width="2" filter="invert(100%)"/></svg>') 16 16, auto;
+        }
+
+        .grid {
+            width: 8400px;
+            height: 2400px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #pointer-location {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .highlight {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .grass-block {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-image: url('texturas/grama.png');
+            background-size: 20px 20px;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="grid" id="grid"></div>
+        <div id="pointer-location">X: 0, Y: 0</div>
+        <div id="highlight" class="highlight"></div>
+        <div id="platform"></div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const pointerLocation = document.getElementById('pointer-location');
+        const highlight = document.getElementById('highlight');
+        const platform = document.getElementById('platform');
+        const cellSize = 20;
+        let isGridVisible = false;
+
+        // Toggle do grid com Ctrl+Q
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'q') {
+                event.preventDefault();
+                isGridVisible = !isGridVisible;
+                grid.style.opacity = isGridVisible ? '1' : '0';
+                document.body.style.overflow = isGridVisible ? 'auto' : 'hidden';
+            }
+        });
+
+        // Cria a plataforma de grama em Y=0, centrada em X=0
+        function createPlatform() {
+            const platformWidth = 10; // 10 blocos de largura
+            const startX = -Math.floor(platformWidth / 2); // Começa para centralizar em X=0
+            
+            for (let i = 0; i < platformWidth; i++) {
+                const block = document.createElement('div');
+                block.className = 'grass-block';
+                const xPos = (startX + i) * cellSize;
+                const yPos = 0; // Y=0
+                block.style.left = `calc(50% + ${xPos}px)`;
+                block.style.top = `calc(50% + ${yPos}px)`;
+                platform.appendChild(block);
+            }
+        }
+
+        createPlatform();
+
+        // Rastreia e destaca a célula sob o mouse
+        document.addEventListener('mousemove', function(event) {
+            const gridRect = grid.getBoundingClientRect();
+            const x = event.pageX - gridRect.left;
+            const y = event.pageY - gridRect.top;
+            
+            const gridX = Math.floor(x / cellSize) - Math.floor(8400 / cellSize / 2);
+            const gridY = Math.floor(y / cellSize) - Math.floor(2400 / cellSize / 2);
+            
+            pointerLocation.textContent = `X: ${gridX}, Y: ${gridY}`;
+
+            const cellX = (gridX + Math.floor(8400 / cellSize / 2)) * cellSize;
+            const cellY = (gridY + Math.floor(2400 / cellSize / 2)) * cellSize;
+            highlight.style.left = `${cellX + gridRect.left}px`;
+            highlight.style.top = `${cellY + gridRect.top}px`;
+            highlight.style.width = `${cellSize - 2}px`;
+            highlight.style.height = `${cellSize - 2}px`;
+            highlight.style.border = '2px solid #666';
+            highlight.style.background = 'transparent';
+        });
+
+        document.addEventListener('mouseleave', function() {
+            highlight.style.border = 'none';
+        });
+    </script>
+</body>
+</html>
