@@ -21,7 +21,7 @@
             background-image: 
                 linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-size: 32px 32px; /* Aumentado de 20px para 32px */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -58,10 +58,10 @@
 
         .grass-block {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 32px; /* Aumentado de 20px para 32px */
+            height: 32px; /* Aumentado de 20px para 32px */
             background-image: url('texturas/grama.png');
-            background-size: 20px 20px;
+            background-size: 32px 32px; /* Aumentado para corresponder */
             z-index: 5;
         }
     </style>
@@ -79,7 +79,7 @@
         const pointerLocation = document.getElementById('pointer-location');
         const highlight = document.getElementById('highlight');
         const platform = document.getElementById('platform');
-        const cellSize = 20;
+        const cellSize = 32; /* Aumentado de 20 para 32 */
         let isGridVisible = false;
 
         // Toggle do grid com Ctrl+Q
@@ -95,13 +95,13 @@
         // Cria a plataforma de grama em Y=0, centrada em X=0
         function createPlatform() {
             const platformWidth = 10; // 10 blocos de largura
-            const startX = -Math.floor(platformWidth / 2); // Começa para centralizar em X=0
+            const startX = -Math.floor(platformWidth / 2);
             
             for (let i = 0; i < platformWidth; i++) {
                 const block = document.createElement('div');
                 block.className = 'grass-block';
                 const xPos = (startX + i) * cellSize;
-                const yPos = 0; // Y=0
+                const yPos = 0;
                 block.style.left = `calc(50% + ${xPos}px)`;
                 block.style.top = `calc(50% + ${yPos}px)`;
                 platform.appendChild(block);
@@ -125,8 +125,8 @@
             const cellY = (gridY + Math.floor(2400 / cellSize / 2)) * cellSize;
             highlight.style.left = `${cellX + gridRect.left}px`;
             highlight.style.top = `${cellY + gridRect.top}px`;
-            highlight.style.width = `${cellSize - 2}px`;
-            highlight.style.height = `${cellSize - 2}px`;
+            highlight.style.width = `${cellSize - 2}px`; /* Ajustado para o novo tamanho */
+            highlight.style.height = `${cellSize - 2}px`; /* Ajustado para o novo tamanho */
             highlight.style.border = '2px solid #666';
             highlight.style.background = 'transparent';
         });
